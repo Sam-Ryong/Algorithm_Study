@@ -1,3 +1,7 @@
+## 오답노트
+
+Python으로 코테를 볼거다? 중복 없는 경우에는 set을 쓰자 set이 더 빠르단다.
+
 # [Silver IV] 듣보잡 - 1764 
 
 [문제 링크](https://www.acmicpc.net/problem/1764) 
