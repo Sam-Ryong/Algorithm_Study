@@ -17,15 +17,14 @@ public class Main {
         ArrayList<Integer[]> edges = new ArrayList<>();
     }
 
-    public static void dfs(int num, int distance, boolean[] prev){
+    public static void dfs(int num, int distance, int prev){
         if (distance > result) {
             result = distance;
             point = num;
         }
-        prev[num] = true;
         for (Integer[] edge : nodes[num].edges) {
-            if (!prev[edge[0]])
-                dfs(edge[0],distance + edge[1], prev);
+            if (prev != edge[0])
+                dfs(edge[0],distance + edge[1], num);
         }
     }
 
@@ -46,9 +45,9 @@ public class Main {
             }
         }
 
-        dfs(1,0,new boolean[V+1]);
+        dfs(1,0, 0);
         result = 0;
-        dfs(point,0,new boolean[V+1]);
+        dfs(point,0, 0);
         System.out.println(result);
 
     }
