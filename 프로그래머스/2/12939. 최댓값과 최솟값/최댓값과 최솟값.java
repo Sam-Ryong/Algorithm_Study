@@ -1,22 +1,23 @@
+import java.util.*;
+import java.lang.*;
+
 class Solution {
     public String solution(String s) {
         String answer = "";
-        Integer max = Integer.MIN_VALUE;
-        Integer min = Integer.MAX_VALUE;
         
-        String[] l = s.split(" ");
+        String[] parse = s.split(" ");
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
         
-        for (String num : l){
-            Integer n = Integer.parseInt(num);
-            if (max < n){
-                max = n;
-            }
-            if (min > n){
-                min = n;
-            }
+        for (String num : parse){
+            max = Math.max(max, Integer.parseInt(num));
+            min = Math.min(min, Integer.parseInt(num));
         }
         
-        answer = answer + min.toString() + " " + max.toString();
+        answer += String.valueOf(min);
+        answer += " ";
+        answer += String.valueOf(max);
+    
         
         
         return answer;
