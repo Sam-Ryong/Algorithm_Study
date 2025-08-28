@@ -1,82 +1,31 @@
 import java.util.*;
 
 class Solution {
-    String[][] tickets;
-    List<String> best = new ArrayList<>();
-    public String[] solution(String[][] t) {
-        String[] answer = new String[t.length+1];
-        tickets = t;
-        String used = "";
-        for (int i = 0; i < tickets.length; i++){
-            used += "0";
+    public String[] solution(String[][] tickets) {
+        // 그래프: 출발지 -> (사전순 도착지들)
+        Map<String, PriorityQueue<String>> g = new HashMap<>();
+        for (String[] t : tickets) {
+            g.computeIfAbsent(t[0], k -> new PriorityQueue<>()).offer(t[1]);
         }
-        for (int i = 0; i < tickets.length; i++){
-            if (tickets[i][0].equals("ICN")){
-                
-                List<String> temp = new ArrayList<>();
-                temp.add("ICN");
-                dfs(i, used, temp);
+
+        Deque<String> stack = new ArrayDeque<>();
+        List<String> route = new ArrayList<>();
+        stack.push("ICN");
+
+        while (!stack.isEmpty()) {
+            String u = stack.peek();
+            PriorityQueue<String> pq = g.get(u);
+            if (pq != null && !pq.isEmpty()) {
+                // 가장 사전순으로 앞선 도착지 선택(티켓 소모)
+                stack.push(pq.poll());
+            } else {
+                // 더 못 나가면 경로 뒤에 쌓기
+                route.add(stack.pop());
             }
         }
-        
-         for (int i = 0; i < tickets.length + 1; i++){
-            answer[i] = best.get(i);
-        }
-        
-        
-        
-        return answer;
+
+        // 역순이 정답
+        Collections.reverse(route);
+        return route.toArray(new String[0]);
     }
-    
-
-    
-    void dfs(int now, String used, List<String> list){
-        
-        if (used.charAt(now) == '1'){
-            if (list.size() == tickets.length + 1){
-                if (best.size() == 0){
-                    best.addAll(list);
-                }
-                else{
-                    
-                    boolean isSmall = false;
-                    for (int i = 0; i < tickets.length + 1; i++){
-                        int cmp = best.get(i).compareTo(list.get(i));
-                        if (cmp == 0)
-                            continue;
-                        else if (cmp > 0){
-                            isSmall = true;
-                            break;
-                        }
-                        else
-                            break;
-                    }
-                    if (isSmall){
-
-                        best.clear();
-                        best.addAll(list);
-                    }
-                        
-                }
-            
-            }
-            return;
-        }
-
-        List<String> temp = new ArrayList<>();
-        temp.addAll(list);
-        temp.add(tickets[now][1]);
-        used = used.substring(0,now) + "1" + used.substring(now+1);
-        
-        
-        
-        for (int i = 0; i < tickets.length; i++){
-            if (tickets[now][1].equals(tickets[i][0]) || list.size() == tickets.length)
-                dfs(i, used, temp);
-            
-        }
-
-    }
-    
-    
 }
