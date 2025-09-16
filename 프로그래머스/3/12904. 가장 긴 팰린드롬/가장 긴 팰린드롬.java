@@ -1,51 +1,54 @@
+import java.lang.*;
+
 class Solution
 {
     public int solution(String s)
     {
         int answer = 0;
-
-        for (int i = 0; i < s.length(); i++){
+        char[] charlist = s.toCharArray();
+        
+        for (int i = 0; i < charlist.length; i++){
             
-            int low = i;
-            int high = i;
-            boolean changed = true;
-            
-            while (changed){
-                changed = false;
-                if (high < s.length() - 1 && low > 0 && s.charAt(low - 1) == s.charAt(high + 1)){
-                    changed = true;
-                    low--;
-                    high++;
+            int maxLength = 1;
+            for (int j = i; i - j + i >= 0 && charlist.length > j; j++){
+                
+                if (i - j + i == 0 || charlist.length - 1 == j){
+                    maxLength = 2 * (j - i) + 1;;
                 }
+                
+                if (charlist[j] != charlist[i-j+i]){
+                    maxLength = 2 * (j - i) - 1;;
+                    break;
+                }
+                
             }
-       
-            if (answer < high - low + 1)
-                answer = high - low + 1;    
+            
+            answer = Math.max(answer, maxLength);
+               
         }
         
-        for (int i = 0; i < s.length() - 1; i++){
+        for (int i = 1; i < charlist.length; i++){
             
-            int low = i;
-            int high = i+1;
-            boolean changed = true;
-            
-            if (s.charAt(low) != s.charAt(high))
+            if (charlist[i] != charlist[i-1])
                 continue;
             
-            while (changed){
-                changed = false;
-                if (high < s.length() - 1 && low > 0 && s.charAt(low - 1) == s.charAt(high + 1)){
-                    changed = true;
-                    low--;
-                    high++;
+            int maxLength = 2;
+            for (int j = i+1; j < charlist.length && i-1 - (j - i) >= 0; j++){
+                
+                if (j == charlist.length - 1 || i-1 - (j - i) == 0){
+                    maxLength = 2 * (j - i + 1);
                 }
+                
+                if (charlist[j] != charlist[i-1 - (j - i)]){
+                    maxLength = 2 * (j - i);
+                    break;
+                }
+                
             }
-       
-            if (answer < high - low + 1)
-                answer = high - low + 1;    
+             answer = Math.max(answer, maxLength);
+               
         }
         
-
         
         return answer;
     }
