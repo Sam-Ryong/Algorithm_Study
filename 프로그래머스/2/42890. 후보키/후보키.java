@@ -2,57 +2,63 @@ import java.util.*;
 import java.lang.*;
 
 class Solution {
-
-
+    int answer = 0;
+    List<Integer> candidate = new ArrayList<>();
     public int solution(String[][] relation) {
-        int answer = 0;
         
-        int M = relation[0].length;
-          
-        int mask = 0;
+    
+        makeCombination(0, relation, 0);
+
+        List<Integer> answerList = new ArrayList<>();
         
-        int x = (int) Math.pow(2,M);
+        Collections.sort(candidate, (a, b) -> Integer.compare(Integer.bitCount(a), Integer.bitCount(b)));
         
-        List<Integer> result = new ArrayList<>();
-        List<Integer> realResult = new ArrayList<>();
-        
-        while (mask < x){
-            Map<List<String>, Integer> map = new HashMap<>();
-            for (String[] tuple : relation){
-                List<String> temp = new ArrayList<>();
-                
-                for (int bits = mask; bits != 0; bits &= bits - 1){
-                    int i = Integer.numberOfTrailingZeros(bits);
-                    temp.add(tuple[tuple.length - 1 - i]);
-                } 
-                
-                if (map.get(temp) == null){
-                    map.put(temp, 1);
-                }
-                else
+        for (int c : candidate){
+            
+            boolean hasSubset = false;
+            for (int a : answerList){
+                if ((a & c) == a){
+                    hasSubset = true;
                     break;
+                }
             }
+            if (!hasSubset)
+                answerList.add(c);
             
-            if (map.size() == relation.length){
-                result.add(mask);
-            }
-            
-            mask++;  
         }
 
-        result.sort((a, b) -> Integer.compare(Integer.bitCount(a), Integer.bitCount(b)));
+        return answerList.size();
         
+    }
+    
+    void makeCombination(int now, String[][] relation, int visit){
+        
+        if (now > relation[0].length){
+            return;
+        }
+        
+        Map<List<String>, Integer> map = new HashMap<>();
+        for (String[] tuple : relation){
+            List<String> fk = new ArrayList<>();
 
-        List<Integer> minimal = new ArrayList<>();
-        for (int m : result) {
-            boolean hasSubsetKey = false;
-            for (int k : minimal) {
-                if ((m & k) == k) { hasSubsetKey = true; break; }
+            for (int bits = visit; bits != 0; bits &= bits - 1) {
+                int i = Integer.numberOfTrailingZeros(bits);
+                fk.add(tuple[i]);
             }
-            if (!hasSubsetKey) minimal.add(m);
+            
+            if (fk.size() > 0 && map.get(fk) == null)
+                map.put(fk, 1);
         }
 
-        return minimal.size();
+        if (map.size() == relation.length){
+    
+            answer++;
+            candidate.add(visit);
+            //return;
+        }
+        
+        makeCombination(now + 1, relation, visit);
+        makeCombination(now + 1, relation, visit | 1 << now);
         
     }
      
