@@ -1,0 +1,7 @@
+-- 코드를 입력하세요
+with
+    temp as (select name, count(*) as cnt from animal_ins group by name)
+    
+select * from temp
+where cnt > 1 and name is not null
+order by name
